@@ -46,6 +46,10 @@ class StaticMap
     @zoom = MapboxUtils.validate_zoom(zoom)
   end
 
+  def api_id=(api_id)
+    @api_id = MapboxUtils.validate_api_id(api_id)
+  end
+
   def markers
     @markers ||= []
   end
@@ -60,7 +64,7 @@ class StaticMap
   # make the string from the markers
 
   def marker_string
-    markers.each.map{|marker| marker.to_s}.join(",") + "/" unless markers.nil? or markers.empty?
+    markers.each.map{|marker| marker.to_s}.join(",") + "/" unless markers.nil? ||  markers.length == 0
   end
 
   # Allow the user to class level configure the API ID

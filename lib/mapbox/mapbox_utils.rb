@@ -27,4 +27,10 @@ class MapboxUtils
     zoom
   end
 
+
+  def self.validate_api_id(api_id)
+    raise ArgumentError, "api_id cannot be nil" if api_id.nil?
+    api_id
+  end
+
 end

@@ -35,6 +35,10 @@ describe StaticMap do
   end
 
   context "Testing input validation" do
+    it "should throw an exception without an api_id." do
+      expect{ subject.api_id = nil }.to raise_error(ArgumentError)
+    end
+
     it "should throw an exception if the latitude is malformed." do
       expect{ subject.latitude = 1337 }.to raise_error(ArgumentError)
       expect{ subject.latitude = 86 }.to raise_error(ArgumentError)

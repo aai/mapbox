@@ -22,6 +22,8 @@ Or install it yourself as:
 
 ## Usage
 
+### Quick Start
+
 Set your MAP API ID .
 ```
   ENV['MAPBOX_API_ID'] = "examples.map-4l7djmvo"
@@ -41,7 +43,29 @@ map = StaticMap.new(38.89,-77.04,13)
 map.width = 400
 map.width = 300
 map.to_s
+# => "api.tiles.mapbox.com/v3/examples.map-4l7djmvo/-77.04,38.89,13/300x480.png"
 ```
+
+Add markers.
+
+```ruby
+# MapboxMarker.new(latitude, longitude, size=SMALL_PIN, label=nil, color=nil)
+map << MapboxMarker.new(38.89, -77.04, MapboxMarker::MEDIUM_PIN, "monument")
+map.to_s
+# => "api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/300x480.png"
+```
+
+### StaticMap
+
+... docs coming soon ...
+
+### MapboxMarker
+
+... docs coming soon ...
+
+### CustomMarker
+
+... docs coming soon ...
 
 ## Contributing
 
