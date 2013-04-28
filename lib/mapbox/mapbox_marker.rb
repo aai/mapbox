@@ -1,5 +1,5 @@
-class MapboxMarker
-  attr_accessor :name, :latitude, :longitude, :label, :color
+class MapboxMarker < AbstractMarker
+  attr_accessor :name, :label, :color
 
   SMALL_PIN = "pin-s"
   MEDIUM_PIN = "pin-m"
@@ -7,34 +7,34 @@ class MapboxMarker
 
   def self.size
     {
-      small: SMALL_PIN,
-      medium: MEDIUM_PIN,
-      large: LARGE_PIN
+      :small => SMALL_PIN,
+      :medium => MEDIUM_PIN,
+      :large => LARGE_PIN
     }
   end
 
-  def initialize(latitude, longitude, size=MEDIUM_PIN, label=nil, color=nil)
+  def self.maki_icons
+    [ "circle-stroked", "circle", "square-stroked", "square", "triangle-stroked", "triangle", 
+      "star-stroked", "star", "cross", "marker-stroked", "marker", "religious-jewish", 
+      "religious-christian", "religious-muslim", "cemetery", "place-of-worship", "airport", 
+      "heliport", "rail", "rail-underground", "rail-above", "bus", "fuel", "parking", 
+      "parking-garage", "airfield", "roadblock", "ferry", "harbor", "bicycle", "park", 
+      "park2", "museum", "lodging", "monument", "zoo", "garden", "campsite", "theatre", 
+      "art-gallery", "pitch", "soccer", "america-football", "tennis", "basketball", "baseball", 
+      "golf", "swimming", "cricket", "skiing", "school", "college", "library", "post", 
+      "fire-station", "town-hall", "police", "prison", "embassy", "waste-basket", "toilets", 
+      "telephone", "emergency-telephone", "disability", "beer", "restaurant", "cafe", "shop", 
+      "fast-food", "bar", "bank", "grocery", "cinema", "alcohol-shop", "music", "hospital", 
+      "pharmacy", "danger", "industrial", "warehouse", "commercial", "building", "oil-well", 
+      "dam", "slaughterhouse", "logging", "water", "wetland" ]
+  end
+
+  def initialize(latitude, longitude, size=SMALL_PIN, label=nil, color=nil)
     self.name = size
     self.latitude = latitude
     self.longitude = longitude
     self.label = label
     self.color = color
-  end
-
-  def latitude=(latitude)
-    @latitude = MapboxMarker.validate_latitude(latitude)
-  end
-
-  def longitude=(longitude)
-    @longitude = MapboxMarker.validate_longitude(longitude)
-  end
-
-  def lat
-    self.latitude
-  end
-
-  def lon
-    self.longitude
   end
 
   def size
@@ -45,16 +45,12 @@ class MapboxMarker
     self.name = size
   end
 
-  def lat=(latitude)
-    self.latitude = latitude
-  end
-
-  def lon=(longitude)
-    self.longitude = longitude
-  end
-
   def color=(color)
     @color = MapboxMarker.validate_color(color) unless color.nil?
+  end
+
+  def label=(label)
+    @label = MapboxMarker.validate_label(label) unless label.nil?
   end
 
   def label_string
@@ -62,13 +58,11 @@ class MapboxMarker
   end
 
   def color_string
-    "+#{self.color}" unless self.label.nil? || self.label.strip == ""
+    "+#{self.color}" unless self.color.nil? || self.color.strip == ""
   end
 
-  # :name-:label+:color(:lon,:lat)
-  # pin-s-park+cc4422(-77,38)
   def to_s
-    "#{self.name}#{self.label_string}#{self.color_string}(#{self.lat},#{self.lon})"
+    "#{self.name}#{self.label_string}#{self.color_string}(#{self.lon},#{self.lat})"
   end
 
   private
@@ -79,18 +73,11 @@ class MapboxMarker
     color.downcase
   end
 
-  def self.validate_latitude(latitude)
-    latitude = latitude.to_f
-    raise ArgumentError, "latitude needs to be between -90 and 90" unless 
-      latitude >= -90.0 && latitude <= 90.0 
-    latitude
-  end
-
-  def self.validate_longitude(longitude)
-    longitude = longitude.to_f
-    raise ArgumentError, "longitude needs to be between -180 and 180" unless 
-      longitude >= -180.0 && longitude <= 180.0 
-    longitude
+  def self.validate_label(label)
+    label = label.to_s
+    raise ArgumentError, "a label is either a single charater 0-9 or a-z OR a maki icon" unless 
+      label =~ /^[0-9a-zA-Z]{1}$/ || MapboxMarker.maki_icons.include?(label)
+    label
   end
 end
 

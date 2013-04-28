@@ -1,6 +1,10 @@
 # Mapbox
 
-TODO: Write a gem description
+Mapbox is awesome. But it doesn't have an official gem. :( So....
+
+This the the _**unofficial**_ way to connect to the [Static Map API from MapBox](http://mapbox.com/developers/api/).
+
+This gem provides a simple way to create a static map and add markers.
 
 ## Installation
 
@@ -18,7 +22,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Set your MAP API ID .
+```
+  ENV['MAPBOX_API_ID'] = "examples.map-4l7djmvo"
+```
+
+OR
+
+```
+  StaticMap.api_id = "examples.map-4l7djmvo"
+```
+
+Make a map.
+
+```ruby
+# StaticMap.new(lat, lon, zoom, width=640, height=480)
+map = StaticMap.new(38.89,-77.04,13)
+map.width = 400
+map.width = 300
+map.to_s
+```
 
 ## Contributing
 
