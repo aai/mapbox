@@ -1,6 +1,8 @@
-class StaticMap 
+require 'uri'
 
-  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers
+class StaticMap
+
+  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers, :params
 
   def initialize(latitude, longitude, zoom, width=640, height=480, api_id=nil, markers=nil)
     self.latitude = latitude
@@ -15,7 +17,9 @@ class StaticMap
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/-77.04,38.89,13/400x300.png
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png
   def to_s
-    "#{StaticMap.api_path}/#{self.api_id}/#{marker_string}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
+    base = "#{StaticMap.api_path}/#{self.api_id}/#{marker_string}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
+    query = params && params.length > 0 ? '?'+URI.encode_www_form(params) : ''
+    base + query
   end
 
   def lat
@@ -50,6 +54,10 @@ class StaticMap
     @api_id = MapboxUtils.validate_api_id(api_id)
   end
 
+  def params
+    @params ||= self.class.version[:default_params]
+  end
+
   def markers
     @markers ||= []
   end
@@ -80,11 +88,17 @@ class StaticMap
   end
 
   def self.api_path
-    @@api_path ||= (ENV["MAPBOX_API_PATH"] || "api.tiles.mapbox.com/v3")
+    @@api_path ||= (ENV["MAPBOX_API_PATH"] || version[:api_path])
   end 
   
   def self.api_path=(api_path)
     @@api_path = api_path
+  end
+
+  def self.version
+    token = ENV['MAPBOX_ACCESS_TOKEN']
+    return { api_path: 'api.tiles.mapbox.com/v3' } unless token
+    { api_path: 'api.tiles.mapbox.com/v4', default_params: { access_token: token } }
   end
 
 end
