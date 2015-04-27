@@ -16,11 +16,32 @@ describe StaticMap do
   let(:width){400}
   let(:height){300}
   let(:api_id){"examples.map-4l7djmvo"}
+  before do
+    StaticMap.api_path = nil # clear out the cache
+  end
 
   context "static image for :map" do
     subject(:map){ StaticMap.new(lat, lon, zoom, width, height, api_id, markers) }
+    let(:expected_version) { 3 }
+    let(:expected_base_url) { "api.tiles.mapbox.com/v#{expected_version}/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png" }
     let(:markers){ [MapboxMarker.new(38.89,-77.04,MapboxMarker::MEDIUM_PIN,"monument")] }
-    its(:to_s){should == "api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png" }
+    let(:token) { 'pk.RtaW4iLCJhIjoid1ZLYXc2WSJ9.3K_mHa' }
+
+    its(:to_s) { should == expected_base_url }
+    context 'extra params' do
+      before do
+        map.params = { foo: 'hello world' }
+      end
+      its(:to_s) { should == expected_base_url+'?foo=hello+world' }
+    end
+    context 'default v4 params' do
+      let(:expected_version) { 4 }
+      before do
+        allow(ENV).to receive(:[]).with('MAPBOX_API_PATH').and_return nil
+        allow(ENV).to receive(:[]).with('MAPBOX_ACCESS_TOKEN').and_return token
+      end
+      its(:to_s) { should == "#{expected_base_url}?access_token=#{token}" }
+    end
   end
 
   context "Static image for :map with :markers" do
@@ -31,6 +52,33 @@ describe StaticMap do
 
       subject.to_s.should == 
         "api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png"
+    end
+  end
+
+  describe 'api path' do
+    subject { StaticMap.api_path }
+
+    context 'no environment variable' do
+      it { should == 'api.tiles.mapbox.com/v3' }
+    end
+
+    context 'environment variables' do
+      before do
+        allow(ENV).to receive(:[]).with('MAPBOX_API_PATH').and_return api_path
+      end
+      context 'MAPBOX_API_PATH environment variable' do
+        let(:api_path) { 'my.custom.host/version' }
+        it { should == api_path }
+      end
+
+      context 'MAPBOX_ACCESS_TOKEN environment variable' do
+        let(:token) { 'eea3d0b84.134ce8bf75' }
+        let(:api_path) { nil }
+        before do
+          allow(ENV).to receive(:[]).with('MAPBOX_ACCESS_TOKEN').and_return token
+        end
+        it { should == 'api.tiles.mapbox.com/v4' }
+      end
     end
   end
 

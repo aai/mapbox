@@ -11,6 +11,6 @@ group :development, :test do
   gem 'rb-fsevent'
   gem 'terminal-notifier-guard'
   gem 'json'
-  gem 'rspec'
+  gem 'rspec', '~> 2.0'
   gem 'github-markup'
 end
