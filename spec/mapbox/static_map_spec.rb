@@ -9,13 +9,15 @@ require 'mapbox'
 # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png
 
 describe StaticMap do
-  subject(:map){ StaticMap.new(lat, lon, zoom, width, height, api_id) }
-  let(:lat){38.89}
-  let(:lon){-77.04}
-  let(:zoom){13}
-  let(:width){400}
-  let(:height){300}
-  let(:api_id){"examples.map-4l7djmvo"}
+  subject(:map) { StaticMap.new(lat, lon, zoom, width, height, api_id) }
+  let(:lat) {38.89}
+  let(:lon) {-77.04}
+  let(:zoom) {13}
+  let(:width) {400}
+  let(:height) {300}
+  let(:api_id) {'examples.map-4l7djmvo'}
+  let(:token) { 'pk.RtaW4iLCJhIjoid1ZLYXc2WSJ9.3K_mHa' }
+
   before do
     StaticMap.api_path = nil # clear out the cache
   end
@@ -24,8 +26,7 @@ describe StaticMap do
     subject(:map){ StaticMap.new(lat, lon, zoom, width, height, api_id, markers) }
     let(:expected_version) { 3 }
     let(:expected_base_url) { "api.tiles.mapbox.com/v#{expected_version}/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png" }
-    let(:markers){ [MapboxMarker.new(38.89,-77.04,MapboxMarker::MEDIUM_PIN,"monument")] }
-    let(:token) { 'pk.RtaW4iLCJhIjoid1ZLYXc2WSJ9.3K_mHa' }
+    let(:markers){ [MapboxMarker.new(38.89,-77.04, MapboxMarker::MEDIUM_PIN, 'monument')] }
 
     its(:to_s) { should == expected_base_url }
     context 'extra params' do
@@ -52,6 +53,38 @@ describe StaticMap do
 
       subject.to_s.should == 
         "api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png"
+    end
+  end
+
+  context 'Static image for :map with :geojson' do
+    subject(:map) { StaticMap.new(lat, lon, zoom, width, height, api_id) }
+    let(:lat) { 12.51000 }
+    let(:lon) { -69.95000 }
+    let(:zoom) { 12 }
+    let(:geojson) {
+      {
+          type: 'Feature',
+          properties: {
+              :'stroke-width' => 4,
+              :stroke => '#ff4444',
+              :'stroke-opacity' => 0.5
+          },
+          geometry: {
+              type: 'Polygon',
+              coordinates: [[[-69.89912109375001,12.452001953124963],[-70.05087890624995,12.597070312500037],[-69.97314453125,12.567626953124986],[-69.89912109375001,12.452001953124963]]]
+          }
+      }
+    }
+
+    before do
+      allow(ENV).to receive(:[]).with('MAPBOX_API_PATH').and_return nil
+      allow(ENV).to receive(:[]).with('MAPBOX_ACCESS_TOKEN').and_return token
+    end
+
+    it 'has geojson in url' do
+      map.geojson = geojson
+
+      expect(map.to_s).to eq("api.tiles.mapbox.com/v4/examples.map-4l7djmvo/geojson(#{URI.escape("#{geojson.to_json}")})/-69.95,12.51,12/400x300.png?access_token=#{token}")
     end
   end
 

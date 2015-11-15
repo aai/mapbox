@@ -2,7 +2,7 @@ require 'uri'
 
 class StaticMap
 
-  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers, :params
+  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers, :geojson, :params
 
   def initialize(latitude, longitude, zoom, width=640, height=480, api_id=nil, markers=nil)
     self.latitude = latitude
@@ -17,8 +17,8 @@ class StaticMap
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/-77.04,38.89,13/400x300.png
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png
   def to_s
-    base = "#{StaticMap.api_path}/#{self.api_id}/#{marker_string}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
-    query = params && params.length > 0 ? '?'+URI.encode_www_form(params) : ''
+    base = "#{StaticMap.api_path}/#{self.api_id}/#{overlay}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
+    query = params && params.length > 0 ? '?' + URI.encode_www_form(params) : ''
     base + query
   end
 
@@ -69,10 +69,14 @@ class StaticMap
   def <<(marker)
     self.markers << marker
   end
-  # make the string from the markers
 
-  def marker_string
-    markers.each.map{|marker| marker.to_s}.join(",") + "/" unless markers.nil? ||  markers.length == 0
+  # make the overlay string from the markers, geojson or path
+  def overlay
+    return markers.each.map{|marker| marker.to_s}.join(',') + '/' unless markers.nil? || markers.length == 0
+
+    return "geojson(#{URI.escape("#{geojson.to_json}")})/" unless geojson.nil? || !geojson.kind_of?(Hash)
+
+    ''
   end
 
   # Allow the user to class level configure the API ID
