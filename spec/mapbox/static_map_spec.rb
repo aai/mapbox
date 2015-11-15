@@ -68,7 +68,7 @@ describe StaticMap do
     it 'should add markers to itself' do
       subject << MapboxMarker.new(38.89,-77.04, MapboxMarker::MEDIUM_PIN, 'monument')
 
-      subject.to_s.should == 'api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png'
+      expect(subject.to_s).to eq('api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png')
     end
   end
 

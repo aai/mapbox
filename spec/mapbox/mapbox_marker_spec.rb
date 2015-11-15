@@ -200,9 +200,9 @@ describe MapboxMarker do
     end
 
     it 'define constanst for pin sizes' do
-      MapboxMarker::SMALL_PIN.should == 'pin-s'
-      MapboxMarker::MEDIUM_PIN.should == 'pin-m'
-      MapboxMarker::LARGE_PIN.should == 'pin-l'
+      expect(MapboxMarker::SMALL_PIN).to eq('pin-s')
+      expect(MapboxMarker::MEDIUM_PIN).to eq('pin-m')
+      expect(MapboxMarker::LARGE_PIN).to eq('pin-l')
     end
   end
 end
