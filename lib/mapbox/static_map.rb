@@ -84,15 +84,23 @@ class StaticMap
   # in a very simple fashion with services like heroku
 
   def self.api_id
-    @@api_id ||= ENV["MAPBOX_API_ID"]
+    @@api_id ||= ENV['MAPBOX_API_ID']
   end  
   
   def self.api_id=(api_id)
     @@api_id = api_id
   end
 
+  def self.access_token
+    @@access_token ||= ENV['MAPBOX_ACCESS_TOKEN']
+  end
+
+  def self.access_token=(access_token)
+    @@access_token = access_token
+  end
+
   def self.api_path
-    @@api_path ||= (ENV["MAPBOX_API_PATH"] || version[:api_path])
+    @@api_path ||= (ENV['MAPBOX_API_PATH'] || version[:api_path])
   end 
   
   def self.api_path=(api_path)
@@ -100,8 +108,8 @@ class StaticMap
   end
 
   def self.version
-    token = ENV['MAPBOX_ACCESS_TOKEN']
-    return { api_path: 'api.tiles.mapbox.com/v3' } unless token
+    token = access_token
+    return { api_path: 'api.tiles.mapbox.com/v3' } if token.nil?
     { api_path: 'api.tiles.mapbox.com/v4', default_params: { access_token: token } }
   end
 

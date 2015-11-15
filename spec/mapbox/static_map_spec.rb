@@ -15,11 +15,14 @@ describe StaticMap do
   let(:zoom) {13}
   let(:width) {400}
   let(:height) {300}
-  let(:api_id) {'examples.map-4l7djmvo'}
+  let(:api_id) { 'examples.map-4l7djmvo' }
   let(:token) { 'pk.RtaW4iLCJhIjoid1ZLYXc2WSJ9.3K_mHa' }
 
   before do
-    StaticMap.api_path = nil # clear out the cache
+    # clear out the cache
+    StaticMap.api_path = nil
+    StaticMap.api_id = nil
+    StaticMap.access_token = nil
   end
 
   context "static image for :map" do
@@ -88,10 +91,10 @@ describe StaticMap do
     end
   end
 
-  describe 'api path' do
+  context 'api path' do
     subject { StaticMap.api_path }
 
-    context 'no environment variable' do
+    describe 'no environment variable' do
       it { should == 'api.tiles.mapbox.com/v3' }
     end
 
@@ -105,7 +108,6 @@ describe StaticMap do
       end
 
       context 'MAPBOX_ACCESS_TOKEN environment variable' do
-        let(:token) { 'eea3d0b84.134ce8bf75' }
         let(:api_path) { nil }
         before do
           allow(ENV).to receive(:[]).with('MAPBOX_ACCESS_TOKEN').and_return token
