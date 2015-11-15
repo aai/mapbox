@@ -176,14 +176,14 @@ describe MapboxMarker do
       expect{ subject.label = 10 }.to raise_error(ArgumentError)
       expect{ subject.label = '10' }.to raise_error(ArgumentError)
       expect{ subject.label = 'AA' }.to raise_error(ArgumentError)
-      expect{ subject.label = 'q' }.to_not raise_error(ArgumentError)
-      expect{ subject.label = 5 }.to_not raise_error(ArgumentError)
+      expect{ subject.label = 'q' }.to_not raise_error
+      expect{ subject.label = 5 }.to_not raise_error
     end
 
     it 'should throw an exception if the label is not a maki-icon' do
       expect{ subject.label = 'wilbert' }.to raise_error(ArgumentError)
       expect{ subject.label = 'religious-agnostic' }.to raise_error(ArgumentError)
-      expect{ subject.label = 'cricket' }.to_not raise_error(ArgumentError)
+      expect{ subject.label = 'cricket' }.to_not raise_error
     end
   end
 

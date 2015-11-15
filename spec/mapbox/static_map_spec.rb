@@ -123,8 +123,8 @@ describe StaticMap do
     it 'should throw an exception if the zoom is malformed' do
       expect{ subject.zoom = -1 }.to raise_error(ArgumentError)
       expect{ subject.zoom = 23 }.to raise_error(ArgumentError)
-      expect{ subject.zoom = 22 }.not_to raise_error(ArgumentError)
-      expect{ subject.zoom = 0 }.not_to raise_error(ArgumentError)
+      expect{ subject.zoom = 22 }.not_to raise_error
+      expect{ subject.zoom = 0 }.not_to raise_error
     end
   end
 end
