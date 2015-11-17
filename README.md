@@ -77,18 +77,10 @@ Add markers.
 Static map with geojson overlay
 
 ```ruby
-    geojson = {
-      type: 'Feature',
-      properties: {
-        :'stroke-width' => 4,
-        :stroke => '#ff4444',
-        :'stroke-opacity' => 0.5
-      },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[[-69.89912109375001,12.452001953124963],[-70.05087890624995,12.597070312500037],[-69.97314453125,12.567626953124986],[-69.89912109375001,12.452001953124963]]]
-      }
-    }
+    coordinates = [[[-69.89912109375001,12.452001953124963],[-70.05087890624995,12.597070312500037],[-69.97314453125,12.567626953124986],[-69.89912109375001,12.452001953124963]]]
+    geojson_properties = Geojson::Properties.new(stroke_width: 4, stroke: '#ff4444', stroke_opacity: 0.5)
+    geojson_geometry = Geojson::Geometry.new(type: 'Polygon', coordinates: coordinates)
+    geojson = Geojson::Base.new(properties: geojson_properties, geometry: geojson_geometry)
     StaticMap.api_id = 'mapbox.streets-satellite'
     map = StaticMap.new(12.51, -69.95,12, 12)
     map.width = 1280
