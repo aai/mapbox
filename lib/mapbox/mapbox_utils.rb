@@ -50,8 +50,7 @@ class MapboxUtils
   end
 
   def self.validate_color(value)
-    value = value[1..7] if value.start_with?('#')
-    raise ArgumentError, 'color is not a hex color of the form aabbcc' unless value =~ /^[0-9a-fA-F]{6}$/
+    raise ArgumentError, 'color is not a hex color of the form aabbcc' unless value.instance_of?(String) && value =~ /^#?[0-9a-fA-F]{6}$/
     value.downcase
     end
 
