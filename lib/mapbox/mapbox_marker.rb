@@ -46,7 +46,7 @@ class MapboxMarker < AbstractMarker
   end
 
   def color=(color)
-    @color = MapboxMarker.validate_color(color) unless color.nil?
+    @color = MapboxUtils.validate_color(color) unless color.nil?
   end
 
   def label=(label)
@@ -66,12 +66,6 @@ class MapboxMarker < AbstractMarker
   end
 
   private
-
-  def self.validate_color(color)
-    color = color[1..7] if color.start_with?('#')
-    raise ArgumentError, 'color is not a hex color of the form aabbcc' unless color =~ /^[0-9a-fA-F]{6}$/
-    color.downcase
-  end
 
   def self.validate_label(label)
     label = label.to_s
