@@ -18,7 +18,6 @@ class CustomMarker < AbstractMarker
   private
 
   def self.encode_url(url)
-    url.sub!(/^http[s]?\:\/\//, '')
     MapboxUtils.encode_url(url)
   end
 
