@@ -2,7 +2,7 @@ class AbstractMarker
   attr_accessor :latitude, :longitude
 
   def initialize(args=nil)
-    raise "Cannot directly instantiate a SimpleMarker" if self.class == AbstractMarker
+    raise 'Cannot directly instantiate a SimpleMarker' if self.class == AbstractMarker
     super
   end
 
