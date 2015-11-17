@@ -70,7 +70,7 @@ class MapboxMarker < AbstractMarker
   def self.validate_label(label)
     label = label.to_s
     raise ArgumentError, 'a label is either a single charater 0-9 or a-z OR a maki icon' unless
-      label =~ /^[0-9a-zA-Z]{1}$/ || MapboxMarker.maki_icons.include?(label)
+      label =~ /^[0-9a-zA-Z]$/ || MapboxMarker.maki_icons.include?(label)
     label
   end
 end
