@@ -190,15 +190,6 @@ describe MapboxMarker do
   context 'MapboxMarker class' do
     subject(:klass) { MapboxMarker }
 
-    describe '#maki_icons' do
-      subject { super().maki_icons }
-
-      it { should include('wetland') }
-      it { should include('zoo') }
-      it { should include('circle-stroked') }
-      it { should_not include('dangerous') }
-    end
-
     it 'define constanst for pin sizes' do
       expect(MapboxMarker::SMALL_PIN).to eq('pin-s')
       expect(MapboxMarker::MEDIUM_PIN).to eq('pin-m')
