@@ -80,20 +80,9 @@ describe StaticMap do
     let(:lat) { 12.51000 }
     let(:lon) { -69.95000 }
     let(:zoom) { 12 }
-    let(:geojson) {
-      {
-          type: 'Feature',
-          properties: {
-              :'stroke-width' => 4,
-              :stroke => '#ff4444',
-              :'stroke-opacity' => 0.5
-          },
-          geometry: {
-              type: 'Polygon',
-              coordinates: [[[-69.89912109375001,12.452001953124963],[-70.05087890624995,12.597070312500037],[-69.97314453125,12.567626953124986],[-69.89912109375001,12.452001953124963]]]
-          }
-      }
-    }
+    let(:properties) { Geojson::Properties.new(stroke_width: 4, stroke: '#ff4444', stroke_opacity: 0.5) }
+    let(:geometry) { Geojson::Geometry.new(type: 'Polygon', coordinates: [[[-69.89912109375001,12.452001953124963],[-70.05087890624995,12.597070312500037],[-69.97314453125,12.567626953124986],[-69.89912109375001,12.452001953124963]]]) }
+    let(:geojson) { Geojson::Base.new(properties: properties, geometry: geometry) }
 
     before do
       allow(ENV).to receive(:[]).with('MAPBOX_API_PATH').and_return nil

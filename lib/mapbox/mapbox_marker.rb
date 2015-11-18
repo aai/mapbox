@@ -30,6 +30,7 @@ class MapboxMarker < AbstractMarker
   end
 
   def color=(color)
+    color = color[1..7] if !color.nil? && color.start_with?('#') # remove # from color
     @color = MapboxUtils.validate_color(color) unless color.nil?
   end
 
