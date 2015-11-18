@@ -3,6 +3,7 @@
 # Geojson format definition http://geojson.org/
 
 module Geojson
+  # Main class
   class Base
     attr_writer :properties, :geometry
 
@@ -12,19 +13,19 @@ module Geojson
     end
 
     def properties=(value)
-      raise ArgumentError, 'geometry must be an instance of Geojson::Geometry' unless value.instance_of?(Geojson::Properties)
+      fail ArgumentError, 'geometry must be an instance of Geojson::Geometry' unless value.instance_of?(Geojson::Properties)
       @properties = value
     end
 
     def geometry=(value)
-      raise ArgumentError, 'geometry must be an instance of Geojson::Geometry' unless value.instance_of?(Geojson::Geometry)
+      fail ArgumentError, 'geometry must be an instance of Geojson::Geometry' unless value.instance_of?(Geojson::Geometry)
       @geometry = value
     end
 
     def to_json
       properties_hash = @properties.to_h
 
-      data = Hash.new
+      data = {}
       data[:type] = 'Feature'
       data[:properties] = properties_hash unless properties_hash.empty?
       data[:geometry] = @geometry.to_h

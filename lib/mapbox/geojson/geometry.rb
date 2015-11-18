@@ -1,4 +1,5 @@
 module Geojson
+  # Helper class
   class Geometry
     attr_accessor :type, :coordinates
 
@@ -12,20 +13,21 @@ module Geojson
     end
 
     def coordinates=(value)
-      raise ArgumentError, 'coordinates must be of type Array' unless value.instance_of?(Array)
+      fail ArgumentError, 'coordinates must be of type Array' unless value.instance_of?(Array)
       @coordinates = value
     end
 
     def to_h
-      data = Hash.new
-      data[:type] = self.type
-      data[:coordinates] = self.coordinates
+      data = {}
+      data[:type] = type
+      data[:coordinates] = coordinates
       data
     end
 
     def self.validate_geometry_type(value)
       geometry_types = %w(Point LineString Polygon MultiPoint MultiLineString MultiPolygon)
-      raise ArgumentError, "type must be one of [#{geometry_types.to_s}]" unless geometry_types.include?(value)
+      fail ArgumentError, "type must be one of [#{geometry_types}]" unless geometry_types.include?(value)
+
       value
     end
   end

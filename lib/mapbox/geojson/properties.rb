@@ -1,4 +1,5 @@
 module Geojson
+  # Helper class
   class Properties
     attr_writer :title, :description, :marker_size, :marker_symbol, :marker_color, :stroke, :stroke_opacity, :stroke_width, :fill, :fill_opacity
 
@@ -14,7 +15,7 @@ module Geojson
         fill: '#555555',
         fill_opacity: 0.6
     )
-      self.title  = title
+      self.title = title
       self.description = description
       self.marker_size = marker_size
       self.marker_symbol = marker_symbol
@@ -27,12 +28,12 @@ module Geojson
     end
 
     def title=(value)
-      raise ArgumentError, 'title must be of type String' unless value.instance_of?(String)
+      fail ArgumentError, 'title must be of type String' unless value.instance_of?(String)
       @title = value
     end
 
     def description=(value)
-      raise ArgumentError, 'description must be of type String' unless value.instance_of?(String)
+      fail ArgumentError, 'description must be of type String' unless value.instance_of?(String)
       @description = value
     end
 
@@ -41,7 +42,7 @@ module Geojson
     end
 
     def marker_symbol=(value)
-      return @marker_symbol = value if value === ''
+      return @marker_symbol = value if value == ''
       @marker_symbol = MapboxUtils.validate_marker_symbol(value)
     end
 
@@ -71,7 +72,7 @@ module Geojson
 
     def to_h
       # dont add keys with default values in order to minimize the characters sent in request
-      data = Hash.new
+      data = {}
       data[:title] = @title unless @title.empty?
       data[:description] = @description unless @description.empty?
       data[:'marker-size'] = @marker_size unless @marker_size == 'medium'
@@ -86,17 +87,17 @@ module Geojson
     end
 
     def self.validate_marker_size(value)
-      raise ArgumentError, 'marker size must be `small`, `medium` or `large`' unless %w(small medium large).include?(value)
+      fail ArgumentError, 'marker size must be `small`, `medium` or `large`' unless %w(small medium large).include?(value)
       value
     end
 
     def self.validate_opacity(value)
-      raise ArgumentError, 'opacity must be between 0.0 and 1.0' unless value.is_a?(Numeric) && value >= 0.0 && value <= 1.0
+      fail ArgumentError, 'opacity must be between 0.0 and 1.0' unless value.is_a?(Numeric) && value >= 0.0 && value <= 1.0
       value
     end
 
     def self.validate_stroke_width(value)
-      raise ArgumentError, 'width must be greater then or equal to 0.0' unless value.is_a?(Numeric) && value >= 0.0
+      fail ArgumentError, 'width must be greater then or equal to 0.0' unless value.is_a?(Numeric) && value >= 0.0
       value
     end
   end
