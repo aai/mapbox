@@ -74,7 +74,11 @@ class StaticMap
   def overlay
     return markers.each.map{|marker| marker.to_s}.join(',') + '/' unless markers.nil? || markers.length == 0
 
-    return "geojson(#{URI.escape("#{geojson.to_json}")})/" unless geojson.nil? || !geojson.kind_of?(Geojson::Base)
+    if !geojson.nil? && geojson.kind_of?(Geojson::Base)
+      # escape and replace [ ]
+      geojson_encoded = URI.escape("#{geojson.to_json}").gsub("[","%5B").gsub("]","%5D")
+      return "geojson(#{geojson_encoded})/"
+    end
 
     ''
   end

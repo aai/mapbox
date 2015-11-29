@@ -91,8 +91,9 @@ describe StaticMap do
 
     it 'has geojson in url' do
       map.geojson = geojson
+      geojson_encoded = URI.escape("#{geojson.to_json}").gsub("[","%5B").gsub("]","%5D")
 
-      expect(map.to_s).to eq("api.tiles.mapbox.com/v4/examples.map-4l7djmvo/geojson(#{URI.escape("#{geojson.to_json}")})/-69.95,12.51,12/400x300.png?access_token=#{token}")
+      expect(map.to_s).to eq("api.tiles.mapbox.com/v4/examples.map-4l7djmvo/geojson(#{geojson_encoded})/-69.95,12.51,12/400x300.png?access_token=#{token}")
     end
   end
 
