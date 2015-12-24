@@ -8,6 +8,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-bundler'
+  gem 'rubocop', require: false
   gem 'rb-fsevent'
   gem 'terminal-notifier-guard'
   gem 'json'

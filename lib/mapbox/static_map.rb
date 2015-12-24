@@ -2,7 +2,7 @@ require 'uri'
 
 class StaticMap
 
-  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers, :params
+  attr_accessor :latitude, :longitude, :zoom, :width, :height, :api_id, :markers, :geojson, :params
 
   def initialize(latitude, longitude, zoom, width=640, height=480, api_id=nil, markers=nil)
     self.latitude = latitude
@@ -17,8 +17,8 @@ class StaticMap
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/-77.04,38.89,13/400x300.png
   # api.tiles.mapbox.com/v3/examples.map-4l7djmvo/pin-m-monument(-77.04,38.89)/-77.04,38.89,13/400x300.png
   def to_s
-    base = "#{StaticMap.api_path}/#{self.api_id}/#{marker_string}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
-    query = params && params.length > 0 ? '?'+URI.encode_www_form(params) : ''
+    base = "#{StaticMap.api_path}/#{self.api_id}/#{overlay}#{lon},#{lat},#{zoom}/#{width}x#{height}.png"
+    query = params && params.length > 0 ? '?' + URI.encode_www_form(params) : ''
     base + query
   end
 
@@ -69,10 +69,18 @@ class StaticMap
   def <<(marker)
     self.markers << marker
   end
-  # make the string from the markers
 
-  def marker_string
-    markers.each.map{|marker| marker.to_s}.join(",") + "/" unless markers.nil? ||  markers.length == 0
+  # make the overlay string from the markers, geojson or path
+  def overlay
+    return markers.each.map{|marker| marker.to_s}.join(',') + '/' unless markers.nil? || markers.length == 0
+
+    if !geojson.nil? && geojson.kind_of?(Geojson::Base)
+      # escape and replace [ ]
+      geojson_encoded = URI.escape("#{geojson.to_json}").gsub("[","%5B").gsub("]","%5D")
+      return "geojson(#{geojson_encoded})/"
+    end
+
+    ''
   end
 
   # Allow the user to class level configure the API ID
@@ -80,15 +88,23 @@ class StaticMap
   # in a very simple fashion with services like heroku
 
   def self.api_id
-    @@api_id ||= ENV["MAPBOX_API_ID"]
+    @@api_id ||= ENV['MAPBOX_API_ID']
   end  
   
   def self.api_id=(api_id)
     @@api_id = api_id
   end
 
+  def self.access_token
+    @@access_token ||= ENV['MAPBOX_ACCESS_TOKEN']
+  end
+
+  def self.access_token=(access_token)
+    @@access_token = access_token
+  end
+
   def self.api_path
-    @@api_path ||= (ENV["MAPBOX_API_PATH"] || version[:api_path])
+    @@api_path ||= (ENV['MAPBOX_API_PATH'] || version[:api_path])
   end 
   
   def self.api_path=(api_path)
@@ -96,8 +112,8 @@ class StaticMap
   end
 
   def self.version
-    token = ENV['MAPBOX_ACCESS_TOKEN']
-    return { api_path: 'api.tiles.mapbox.com/v3' } unless token
+    token = access_token
+    return { api_path: 'api.tiles.mapbox.com/v3' } if token.nil?
     { api_path: 'api.tiles.mapbox.com/v4', default_params: { access_token: token } }
   end
 
