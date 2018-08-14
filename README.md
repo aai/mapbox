@@ -2,7 +2,7 @@
 
 Mapbox is awesome. But it doesn't have an official gem. :( So....
 
-This the the _**unofficial**_ way to connect to the [Static Map API from MapBox](http://mapbox.com/developers/api/).
+This the _**unofficial**_ way to connect to the [Static Map API from MapBox](http://mapbox.com/developers/api/).
 
 This gem provides a simple way to create a static map and add markers.
 
